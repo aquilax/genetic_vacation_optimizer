@@ -149,15 +149,38 @@ var Vacation = (function(){
     return parents;
   }
   
+  function print(vals){
+    offset = conf.firstDay == 0?6:conf.firstDay-1;
+    var t = '<table><tr>';
+    for (i = 0; i < offset; i++){
+      t += '<td>&nbsp;</td>';
+    }
+    for (i in vals){
+      switch(vals[i]){
+        case 1: t += '<td style="background-color:#f00">'+i+'</td>'; break;
+        case 2: t += '<td style="background-color:#0f0">'+i+'</td>'; break;
+        case 3: t += '<td style="background-color:#00f">'+i+'</td>'; break;
+        default: t += '<td>'+i+'</td>';
+      }
+      if ((parseInt(i)+offset+1) % 7 == 0){
+        t += "</tr><tr>";
+      }
+    }
+    t += "</tr></table>";
+    document.write(t);
+  }
+  
   function run(){
     generation = population(conf.individualsInGen);
     for (var i = 0; i < conf.generations; i++){
       generation.sort(function (a, b){return b.grade - a.grade;});
-      console.log(generation[0].grade);
+      document.write("<b>"+i+": "+generation[0].grade+"</b><br />");
       generation = evolve(generation);
     }
     generation.sort(function (a, b){return b.grade - a.grade;});
-    document.write(generation[0].v);
+    document.write("<b>"+i+": "+generation[0].grade+"</b><br />");
+    print(generation[0].v);
+    //document.write(generation[0].v);
     console.log(generation[0].grade);
   }
   

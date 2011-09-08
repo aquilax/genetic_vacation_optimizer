@@ -42,17 +42,61 @@ var Vacation = (function(){
   }
 
   function fitness(individual){
-    return 0;
+    var groups = {};
+    var ing = 0;
+    for (i in individual) {
+      if (!individual[i]){
+        ing++;
+      } else {
+        if (ing) {
+          if (typeof(groups[ing]) !== "undefined"){
+            groups[ing] = groups[ing] + 1;
+          } else {
+            groups[ing] = 1;
+          }
+          ing = 0
+        }
+      }
+    }
+    if (ing) {
+      if (typeof(groups[ing]) !== "undefined"){
+        groups[ing] = groups[ing] + 1;
+      } else {
+        groups[ing] = 1;
+      }
+    }
+    var result = 0;
+    for (k in groups){
+      result += Math.pow(groups[k], k);
+    }
+    return result;
+  }
+
+  function rand(min, max){
+    return min + Math.floor(Math.random() * (max - min))
   }
 
   function individual(){
     var g = blankIndividual();
+    var days = conf.vacationDays;
+    while (days > 0) {
+      var d = rand(0, conf.yearDays-1);
+      if (g[d]) {
+        g[d] = false
+        days--;
+      }
+    }
+    return g;
   }
   
   function population(individuals){
     var population = [];
     for (var i = 0; i < individuals; i++){
-      population[i] = individual();
+      var ind = individual()
+      population[i] = {
+        v: ind,
+        grade: fitness(ind)
+      };
     }
     return population;
   }

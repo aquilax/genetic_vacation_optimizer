@@ -1,11 +1,14 @@
 var Vacation = (function(){
 
+  var generations = [];
+
   var conf = {
     year: 0,
     isLeap: false,
     yearDays: 365,
     vacationDays: 20,
-    firstDay: 0
+    firstDay: 0,
+    individualsInGen: 20,
   };
   
   //Day of year to day of week
@@ -26,24 +29,36 @@ var Vacation = (function(){
     conf.firstDay = new Date(conf.year, 0, 1).getDay(); // Jan 1st
   }
 
-  function blankGeneration(){
-    var gen = [];
+  function blankIndividual(){
+    var ind = [];
     for (var i = 0; i < conf.yearDays; i++){
       switch(DoyToDow(conf.year, i)){
-        case 0: gen[i] = false; break; //Sunday
-        case 6: gen[i] = false; break; //Saturday
-        default: gen[i] = true;
+        case 0: ind[i] = false; break; //Sunday
+        case 6: ind[i] = false; break; //Saturday
+        default: ind[i] = true;
       }
     }
-    return gen;
+    return ind;
+  }
+
+  function fitness(individual){
+    return 0;
   }
 
   function individual(){
-    var g = blankGeneration();
+    var g = blankIndividual();
+  }
+  
+  function population(individuals){
+    var population = [];
+    for (var i = 0; i < individuals; i++){
+      population[i] = individual();
+    }
+    return population;
   }
   
   function run(){
-    individual();
+    generations[0] = population(conf.individualsInGen);
   }
   
   return {
